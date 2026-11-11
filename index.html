@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#111711">
+<meta name="description" content="A small, interactive night garden. Change the conditions and watch the moths find their way." />
+<title>Night Garden — Field Notes 07</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap');
+  :root{color-scheme:dark;--ink:#111711;--paper:#e5e3d8;--muted:#92988c;--line:#333b31;--moss:#a9bd83;--glow:#f0d69c;--panel:#171f18;--mono:'DM Mono',monospace;--sans:'DM Sans',sans-serif;--serif:'Instrument Serif',Georgia,serif}
+  *{box-sizing:border-box}html,body{margin:0;min-height:100%;background:var(--ink);color:var(--paper);font-family:var(--sans)}body{overflow:hidden}button,input{font:inherit}button{color:inherit}
+  .frame{min-height:100svh;display:grid;grid-template-rows:auto 1fr auto;padding:27px 34px 21px;position:relative;isolation:isolate}
+  .frame:before{content:"";position:absolute;inset:0;z-index:-1;opacity:.1;pointer-events:none;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.82' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.2'/%3E%3C/svg%3E")}
+  header{display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--line);padding-bottom:18px;z-index:2}.wordmark{font:500 11px var(--mono);letter-spacing:.11em;text-transform:uppercase;display:flex;align-items:center;gap:11px}.mark{width:17px;height:17px;border:1px solid var(--moss);border-radius:50%;position:relative}.mark:after{content:"";position:absolute;width:4px;height:4px;background:var(--moss);border-radius:50%;left:5px;top:5px;box-shadow:0 0 10px var(--moss)}.header-right{display:flex;gap:24px;align-items:center;color:var(--muted);font:10px var(--mono);letter-spacing:.08em;text-transform:uppercase}.live{display:flex;align-items:center;gap:8px}.live i{width:6px;height:6px;background:var(--moss);border-radius:50%;box-shadow:0 0 9px #a9bd83;animation:blink 2.4s infinite}@keyframes blink{50%{opacity:.35}}
+  main{display:grid;grid-template-columns:minmax(220px,285px) 1fr minmax(210px,260px);gap:26px;align-items:center;min-height:0;padding:20px 0;position:relative}
+  .intro{align-self:center;padding:4px 0 12px;z-index:1}.eyebrow,.micro{color:var(--moss);font:10px var(--mono);letter-spacing:.14em;text-transform:uppercase}.intro h1{font:400 clamp(52px,6.4vw,90px)/.89 var(--serif);letter-spacing:-.035em;margin:25px 0 18px;max-width:5ch}.intro h1 em{color:var(--moss);font-weight:400}.intro p{color:#b3b6aa;font:13px/1.75 var(--sans);max-width:230px;margin:0}.tag{display:inline-flex;border:1px solid var(--line);padding:8px 10px;margin-top:25px;color:var(--muted);font:9px var(--mono);letter-spacing:.1em;text-transform:uppercase;gap:8px}.tag span{color:var(--moss)}
+  .stage{position:relative;height:min(70vh,680px);min-height:400px;min-width:0;display:grid;place-items:center;overflow:hidden}.stage:before,.stage:after{content:"";position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);border:1px solid #394337;border-radius:50%;pointer-events:none}.stage:before{width:min(44vw,590px);aspect-ratio:1;opacity:.56}.stage:after{width:min(32vw,430px);aspect-ratio:1;opacity:.34;border-style:dashed;animation:orbit 80s linear infinite}@keyframes orbit{to{transform:translate(-50%,-50%) rotate(360deg)}}
+  #field{width:100%;height:100%;position:absolute;inset:0;cursor:crosshair}.core{position:absolute;width:11px;height:11px;left:50%;top:50%;transform:translate(-50%,-50%);border-radius:50%;background:#f6e7c2;box-shadow:0 0 11px 4px #e7ce91,0 0 55px 20px #dbc17b4a;pointer-events:none}.core:after{content:"";position:absolute;inset:-16px;border:1px solid #d6c58b44;border-radius:50%;animation:breathe 3.6s ease-in-out infinite}@keyframes breathe{50%{transform:scale(1.8);opacity:.25}}
+  .axis{position:absolute;color:#788072;font:9px var(--mono);letter-spacing:.1em;text-transform:uppercase}.axis.top{top:8%;left:50%;transform:translateX(-50%)}.axis.bottom{bottom:8%;left:50%;transform:translateX(-50%)}.axis.left{left:2%;top:50%;writing-mode:vertical-rl;transform:rotate(180deg)}.axis.right{right:2%;top:50%;writing-mode:vertical-rl}
+  .readout{position:absolute;left:50%;bottom:12%;transform:translateX(-50%);text-align:center;pointer-events:none}.readout strong{display:block;color:var(--paper);font:400 20px var(--serif);letter-spacing:.02em}.readout span{color:var(--muted);font:9px var(--mono);letter-spacing:.12em;text-transform:uppercase;display:block;margin-top:5px}
+  .controls{align-self:center;border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:18px 0 20px;z-index:1}.control-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px}.control-head h2{font:10px var(--mono);letter-spacing:.13em;text-transform:uppercase;color:var(--paper);font-weight:400;margin:0}.control-head span{font:9px var(--mono);color:var(--muted)}.presets{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-bottom:22px}.preset{background:none;border:1px solid var(--line);padding:9px 5px;color:#9da395;cursor:pointer;text-align:center;font:9px var(--mono);letter-spacing:.04em;transition:.2s}.preset:hover,.preset:focus-visible{border-color:var(--moss);color:var(--paper);outline:none}.preset[aria-pressed="true"]{border-color:var(--moss);color:var(--moss);background:#a9bd8310}
+  .slider{margin:17px 0 20px}.slider-line{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}.slider label{font:10px var(--mono);letter-spacing:.07em;text-transform:uppercase;color:#c5c7bd}.slider output{font:10px var(--mono);color:var(--moss)}input[type=range]{width:100%;height:2px;background:#485144;appearance:none;outline:none;display:block}input[type=range]::-webkit-slider-thumb{appearance:none;width:10px;height:10px;background:var(--moss);border-radius:50%;cursor:pointer;box-shadow:0 0 8px #a9bd8377}input[type=range]::-moz-range-thumb{width:10px;height:10px;background:var(--moss);border:0;border-radius:50%;cursor:pointer}.control-note{border-top:1px solid var(--line);padding-top:15px;margin-top:19px;color:var(--muted);font:10px/1.6 var(--mono)}.control-note b{font-weight:400;color:var(--moss)}
+  footer{display:flex;justify-content:space-between;align-items:center;border-top:1px solid var(--line);padding-top:14px;color:#777f72;font:9px var(--mono);letter-spacing:.08em;text-transform:uppercase;z-index:2}.footer-left{display:flex;gap:20px;align-items:center}.pause{background:none;border:0;color:var(--muted);cursor:pointer;padding:5px 0;font:9px var(--mono);letter-spacing:.08em;text-transform:uppercase}.pause:hover,.pause:focus-visible{color:var(--moss);outline:none}.corner{color:var(--moss)}
+  @media(max-width:950px){.frame{padding:20px 23px 16px}main{grid-template-columns:minmax(190px,230px) 1fr;gap:16px}.controls{grid-column:1/-1;display:grid;grid-template-columns:1fr 1fr;column-gap:26px;align-self:stretch;padding:12px 0}.control-head{grid-column:1/-1;margin-bottom:8px}.presets{grid-column:1/-1;margin-bottom:4px}.slider{margin:10px 0}.control-note{grid-column:1/-1;margin-top:4px;padding-top:9px}.stage{height:48vh;min-height:330px}.stage:before{width:min(55vw,490px)}.stage:after{width:min(40vw,350px)}}
+  @media(max-width:620px){body{overflow:auto}.frame{min-height:100svh;padding:17px 18px 14px;grid-template-rows:auto auto auto auto}header{padding-bottom:13px}.header-right{gap:11px;font-size:8px}.header-right .coords{display:none}main{grid-template-columns:1fr;gap:0;padding:26px 0 14px}.intro{padding:0}.intro h1{font-size:59px;margin:14px 0 11px}.intro p{max-width:310px;font-size:12px}.tag{margin-top:14px;padding:6px 8px}.stage{grid-row:2;height:58vh;min-height:340px;max-height:510px;margin:0 -7px}.stage:before{width:min(84vw,430px)}.stage:after{width:min(61vw,310px)}.axis.left{left:4%}.axis.right{right:4%}.readout{bottom:11%}.controls{grid-row:3;grid-template-columns:1fr 1fr;padding:13px 0 10px}.control-head{grid-column:1/-1}.presets{margin-top:3px}.slider{margin:11px 0 14px}.control-note{font-size:9px}footer{font-size:8px}.footer-left{gap:11px}.footer-left .credit{display:none}}
+  @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important}}
+</style>
+</head>
+<body>
+<div class="frame">
+  <header>
+    <div class="wordmark"><span class="mark" aria-hidden="true"></span> Night Garden <span style="color:var(--muted)">/ Field notes 07</span></div>
+    <div class="header-right"><span class="coords">41° 52′ N&nbsp; / &nbsp;12° 29′ E</span><span class="live"><i></i> Field active</span></div>
+  </header>
+  <main>
+    <section class="intro" aria-labelledby="title">
+      <div class="eyebrow">After dark, something stirs</div>
+      <h1 id="title">A small <em>wild</em> thing.</h1>
+      <p>A pocket-sized observatory for the quiet choreography of moths around a light.</p>
+      <div class="tag"><span>01</span> Move slowly. Watch closely.</div>
+    </section>
+    <section class="stage" aria-label="Interactive moth observatory">
+      <canvas id="field" aria-label="Animated moths circling a light. Move your pointer to disturb their path."></canvas>
+      <div class="core" aria-hidden="true"></div>
+      <span class="axis top">North / canopy</span><span class="axis bottom">Ground / 00:47</span><span class="axis left">Quiet field</span><span class="axis right">Open air</span>
+      <div class="readout"><strong id="species-name">The pale wanderer</strong><span id="species-note">Nocturnal drift · 38°</span></div>
+    </section>
+    <aside class="controls" aria-label="Field controls">
+      <div class="control-head"><h2>Field conditions</h2><span>LIVE STUDY</span></div>
+      <div class="presets" role="group" aria-label="Choose a field condition">
+        <button class="preset" data-preset="calm" aria-pressed="true">Still air</button>
+        <button class="preset" data-preset="breeze" aria-pressed="false">Breeze</button>
+        <button class="preset" data-preset="swarm" aria-pressed="false">Gather</button>
+      </div>
+      <div class="slider"><div class="slider-line"><label for="drift">Wind drift</label><output id="drift-value" for="drift">32%</output></div><input id="drift" type="range" min="0" max="100" value="32" aria-label="Wind drift"></div>
+      <div class="slider"><div class="slider-line"><label for="glow">Lamp glow</label><output id="glow-value" for="glow">68%</output></div><input id="glow" type="range" min="20" max="100" value="68" aria-label="Lamp glow"></div>
+      <div class="control-note"><b>Field note:</b> The light draws them in, but the air decides how they circle.</div>
+    </aside>
+  </main>
+  <footer><div class="footer-left"><span>Night study no. 07</span><span class="credit">An interactive field sketch</span></div><button class="pause" id="pause" aria-pressed="false">Pause motion</button><span>Drawn in <span class="corner">low light</span></span></footer>
+</div>
+<script>
+(() => {
+  const canvas = document.querySelector('#field');
+  const ctx = canvas.getContext('2d');
+  const stage = canvas.parentElement;
+  const pauseButton = document.querySelector('#pause');
+  const driftInput = document.querySelector('#drift');
+  const glowInput = document.querySelector('#glow');
+  const speciesName = document.querySelector('#species-name');
+  const speciesNote = document.querySelector('#species-note');
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let width = 0, height = 0, dpr = 1, frame = 0, running = !reducedMotion, moths = [], pointer = {x:0,y:0,active:false};
+  let drift = .32, glow = .68, preset = 'calm';
+  pauseButton.setAttribute('aria-pressed',String(!running));
+  pauseButton.textContent=running?'Pause motion':'Resume motion';
+  const names = {calm:['The pale wanderer','Nocturnal drift · 38°'],breeze:['The silver migrant','Crosswind passage · 61°'],swarm:['The dusk collector','Gathering flight · 24°']};
+  const rand = (a,b) => a + Math.random() * (b-a);
+  function resize(){
+    const box = stage.getBoundingClientRect(); dpr = Math.min(window.devicePixelRatio || 1,2);
+    width = box.width; height = box.height; canvas.width = Math.round(width*dpr); canvas.height = Math.round(height*dpr);
+    canvas.style.width = width+'px'; canvas.style.height = height+'px'; ctx.setTransform(dpr,0,0,dpr,0,0);
+    const count = Math.max(36, Math.min(110, Math.floor(width*height/5600)));
+    moths = Array.from({length:count}, (_,i) => ({a:rand(0,Math.PI*2),r:rand(Math.min(width,height)*.09,Math.min(width,height)*.35),speed:rand(.0018,.007)*(i%4===0?-1:1),size:rand(.7,2.1),phase:rand(0,Math.PI*2),wing:rand(0,1),tone:rand(0,1)}));
+  }
+  function draw(){
+    ctx.clearRect(0,0,width,height); frame++;
+    const cx=width/2, cy=height/2, base=Math.min(width,height), wind=drift, lamp=glow;
+    for(let i=0;i<moths.length;i++){
+      const m=moths[i];
+      m.a += m.speed * (preset==='breeze'?1.6:1) * (1+wind*1.8);
+      const flutter=Math.sin(frame*.035+m.phase)*(.8+wind*3.5);
+      const radius=m.r*(.82+Math.sin(frame*.006+m.phase)*.15) + flutter*5;
+      let x=cx+Math.cos(m.a)*radius + Math.sin(m.a*2+m.phase)*wind*base*.045;
+      let y=cy+Math.sin(m.a)*radius*.73 + Math.cos(m.a*1.7+m.phase)*wind*base*.04;
+      if(pointer.active){const dx=x-pointer.x,dy=y-pointer.y,dist=Math.sqrt(dx*dx+dy*dy);if(dist<100){const force=(100-dist)/100;x+=dx/(dist||1)*force*18;y+=dy/(dist||1)*force*18}}
+      const alpha=(.24 + .7*m.tone)*lamp;
+      const flutterWing=Math.sin(frame*.16+m.phase)*2.5;
+      ctx.save();ctx.translate(x,y);ctx.rotate(m.a+Math.PI/2);ctx.globalAlpha=alpha;
+      ctx.fillStyle=m.tone>.55?'#f4dcaa':'#b8c89a';
+      ctx.beginPath();ctx.ellipse(-m.size*1.9,-flutterWing,m.size*1.3,m.size*2.4,-.38,0,Math.PI*2);ctx.fill();
+      ctx.beginPath();ctx.ellipse(m.size*1.9,flutterWing,m.size*1.3,m.size*2.4,.38,0,Math.PI*2);ctx.fill();
+      ctx.fillStyle='#fff0c7';ctx.beginPath();ctx.arc(0,0,m.size*.65,0,Math.PI*2);ctx.fill();
+      ctx.restore();
+      if(m.tone>.85 && i%9===0){ctx.globalAlpha=alpha*.4;ctx.fillStyle='#f2d99e';ctx.beginPath();ctx.arc(x,y,2.5+m.size,0,Math.PI*2);ctx.fill();ctx.globalAlpha=1}
+    }
+    if(running) requestAnimationFrame(draw);
+  }
+  function setPreset(key){preset=key;document.querySelectorAll('.preset').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.preset===key)));speciesName.textContent=names[key][0];speciesNote.textContent=names[key][1];if(key==='calm'){driftInput.value=32}else if(key==='breeze'){driftInput.value=76}else{driftInput.value=15}drift=Number(driftInput.value)/100;document.querySelector('#drift-value').value=driftInput.value+'%';document.querySelector('#drift-value').textContent=driftInput.value+'%';}
+  document.querySelectorAll('.preset').forEach(b=>b.addEventListener('click',()=>setPreset(b.dataset.preset)));
+  driftInput.addEventListener('input',()=>{drift=Number(driftInput.value)/100;document.querySelector('#drift-value').value=driftInput.value+'%';document.querySelector('#drift-value').textContent=driftInput.value+'%';document.querySelectorAll('.preset').forEach(b=>b.setAttribute('aria-pressed','false'))});
+  glowInput.addEventListener('input',()=>{glow=Number(glowInput.value)/100;document.querySelector('#glow-value').value=glowInput.value+'%';document.querySelector('#glow-value').textContent=glowInput.value+'%'});
+  canvas.addEventListener('pointermove',e=>{const r=canvas.getBoundingClientRect();pointer={x:e.clientX-r.left,y:e.clientY-r.top,active:true}});
+  canvas.addEventListener('pointerleave',()=>pointer.active=false);
+  pauseButton.addEventListener('click',()=>{running=!running;pauseButton.setAttribute('aria-pressed',String(!running));pauseButton.textContent=running?'Pause motion':'Resume motion';if(running)requestAnimationFrame(draw)});
+  window.addEventListener('resize',resize,{passive:true});
+  resize();draw();
+})();
+</script>
+</body>
+</html>
