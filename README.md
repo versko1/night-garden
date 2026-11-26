@@ -13,4 +13,6 @@ Open `index.html` in a modern browser. No build step or package install is neede
 - Adjust Wind drift and Lamp glow.
 - Pause or resume the animation from the footer.
 
+If your device is set to reduce motion, the moth animation starts paused. Select **Resume motion** in the footer to start it.
+
 Built with HTML, CSS, Canvas, and plain JavaScript.
